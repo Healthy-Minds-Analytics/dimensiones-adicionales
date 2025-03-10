@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 from docx import Document
 from docx.oxml import OxmlElement
@@ -210,12 +211,17 @@ def generarWord(plantilla_doc, reemplazos):
     Informe_Satisfaccion_Generado.docx
         Un archivo de Word con todos los marcadores reemplazados.
     """
+    # Carpeta para guardar los informes
+    carpeta_informes = "Informes generados"
+    if not os.path.exists(carpeta_informes):
+        os.makedirs(carpeta_informes)
+    
     doc = Document(plantilla_doc)
 
     # Aplicar reemplazos usando map
     list(map(lambda pair: replace_bookmark_pair(doc, pair), reemplazos.items()))
 
-    output_doc = "Informe_Satisfaccion_Generado.docx"
+    output_doc = os.path.join(carpeta_informes, f"Informe_Satisfaccion_{reemplazos['NOMBRE_EMPRESA']}.docx")
     doc.save(output_doc)
 
 if __name__ == '__main__':
@@ -286,3 +292,7 @@ if __name__ == '__main__':
     plantilla_doc = "plantilla_informe_satisfaccion_laboral.docx"  # TODO Cambiar nombre de la plantilla
 
     generarWord(plantilla_doc, resultados)
+
+    ruta_script = os.path.abspath(__file__)
+
+    print(f"Informe generdo correctamente. Cierre esta ventana y vaya a {ruta_script}")

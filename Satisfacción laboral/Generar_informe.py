@@ -3,8 +3,30 @@ import pandas as pd
 from docx import Document
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
+import glob
 from datetime import datetime
 import json
+import random
+
+def seleccionar_csv(ruta):
+    """Busca archivos CSV en la carpeta de la ruta proporcionada.
+       Si solo hay uno, lo devuelve, y si hay más de uno
+       escoge el más reciente."""
+    
+    patron_busqueda = os.path.join(ruta, "*.csv")
+    archivos_csv = glob.glob(patron_busqueda)
+    
+    if not archivos_csv:
+        print(f"No se encontró ningún archivo CSV en la carpeta {ruta}.")
+        return None
+
+    if len(archivos_csv) == 1:
+        return archivos_csv[0]
+
+    # Si hay varios, escogemos el más reciente (mayor fecha de modificación)
+    archivo_mas_reciente = max(archivos_csv, key=os.path.getmtime)
+    return archivo_mas_reciente
+
 
 def replace_bookmark_pair(doc, pair):
     """
@@ -87,7 +109,7 @@ def replace_bookmark_pair(doc, pair):
         print(f"Marcador '{bookmark_name}' no encontrado")
 
 
-def obtenerRespuestas(dataframe, mapa_respuestas):
+def obtenerRespuestas(dataframe, inicio, fin):
     """
     Genera un diccionario con el conteo de cada respuesta por pregunta en un DataFrame, 
     construyendo las claves en el formato 'PREGUNTA_X_Y'.
@@ -151,16 +173,15 @@ def obtenerRespuestas(dataframe, mapa_respuestas):
     }
     """
     conteo_respuestas = {}
-    respuestas_posibles = list(mapa_respuestas.keys())
-    valores_posibles = list(mapa_respuestas.values())
+    valores_posibles = range(inicio, fin)
     
     for i, pregunta in enumerate(dataframe.columns, start=1):
         # Contar respuestas para la pregunta
         conteo = dataframe[pregunta].value_counts()
-        # Rellenar valores faltantes para las respuestas posibles
-        for respuesta, valor in zip(respuestas_posibles, valores_posibles):
+        
+        for valor in valores_posibles:
             clave = f"PREGUNTA_{i}_{valor}"
-            conteo_respuestas[clave] = conteo.get(respuesta, 0)  # Obtener el conteo o 0 si no aparece
+            conteo_respuestas[clave] = conteo.get(valor, 0)  # Obtener el conteo o 0 si no aparece
     
     return conteo_respuestas
 
@@ -212,7 +233,6 @@ def generarWord(plantilla_doc, reemplazos):
         Un archivo de Word con todos los marcadores reemplazados.
     """
     # Carpeta para guardar los informes
-    carpeta_informes = "Informes generados"
     if not os.path.exists(carpeta_informes):
         os.makedirs(carpeta_informes)
     
@@ -223,8 +243,28 @@ def generarWord(plantilla_doc, reemplazos):
 
     output_doc = os.path.join(carpeta_informes, f"Informe_Satisfaccion_{reemplazos['NOMBRE_EMPRESA']}.docx")
     doc.save(output_doc)
+    
+    print(f"Informe generdo correctamente. Cierre esta ventana y vaya a {output_doc}")
 
-if __name__ == '__main__':
+def main():
+    if '__file__' in globals():
+        # Estamos en un script .py real
+        ruta_script = os.path.dirname(os.path.abspath(__file__))
+    else:
+        # Estamos en Jupyter o un entorno sin __file__
+        ruta_script = os.getcwd()
+
+    os.chdir(ruta_script)
+    carpeta_respuestas = './Respuestas'
+    carpeta_informes = './Informes generados'
+    carpeta_plantillas = './Plantillas'
+
+    archivo = seleccionar_csv(carpeta_respuestas)
+
+    if archivo is None:
+        print("No se ha encontrado ningún archivo csv")
+        return
+
     empresa = input("Por favor, indica el nombre de la empresa:")
     print("Nombre de la empresa: " + empresa)
 
@@ -252,7 +292,8 @@ if __name__ == '__main__':
     informacion.update(valores_defecto)
     '''
 
-    respuestas = pd.read_csv('Encuesta_ficticia.csv', sep=';')
+    print(f"Procesando archivo: {archivo}")
+    respuestas = pd.read_csv(archivo, sep=None, engine='python')
 
     # Obtener las preguntas directamente de las cabeceras del CSV
     preguntas = list(respuestas.columns)
@@ -291,8 +332,9 @@ if __name__ == '__main__':
     # Cargar el documento Word plantilla
     plantilla_doc = "plantilla_informe_satisfaccion_laboral.docx"  # TODO Cambiar nombre de la plantilla
 
-    generarWord(plantilla_doc, resultados)
+    plantilla_doc = os.path.join(carpeta_plantillas, "plantilla_informe_satisfaccion_laboral.docx")  # TODO Cambiar nombre de la plantilla
 
-    ruta_script = os.path.abspath(__file__)
+    generarWord(plantilla_doc, carpeta_informes, resultados)
 
-    print(f"Informe generdo correctamente. Cierre esta ventana y vaya a {ruta_script}")
+if __name__ == "__main__":
+    main()

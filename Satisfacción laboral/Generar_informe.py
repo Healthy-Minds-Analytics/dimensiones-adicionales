@@ -214,7 +214,56 @@ def calcularValores(respuestas_agrupadas):
 
     return reemplazos
 
-def generarWord(plantilla_doc, reemplazos):
+def escogerMedidas(media):
+    """
+    Carga los datos de rangos y medidas desde medidas.json,
+    clasifica la media y devuelve un diccionario con 3 medidas seleccionadas
+    aleatoriamente en función del nivel obtenido.
+    """
+    # Carga de datos desde el archivo JSON
+    with open("medidas.json", "r", encoding="utf-8") as f:
+        data = json.load(f)
+    
+    #print(data)
+    # Extracción de los rangos y las medidas
+    rangos = data["rangos"]
+    medidas = data["medidas"]
+
+    # Clasificación según la media
+    if rangos["rojo"][0] <= media <= rangos["rojo"][1]:
+        nivel = "rojo"
+    elif rangos["naranja"][0] <= media <= rangos["naranja"][1]:
+        nivel = "naranja"
+    elif rangos["amarillo"][0] <= media <= rangos["amarillo"][1]:
+        nivel = "amarillo"
+    elif rangos["verde"][0] <= media <= rangos["verde"][1]:
+        nivel = "verde"
+    else:
+        nivel = None
+    
+    # Selección de medidas
+    generar = 3
+    if nivel:
+        
+        medidas_seleccionadas = random.sample(medidas[nivel], generar)
+        return {
+            "Prueba": nivel,
+            "MEDIDAS": generar,
+            "MEDIDA_1": medidas_seleccionadas[0],
+            "MEDIDA_2": medidas_seleccionadas[1],
+            "MEDIDA_3": medidas_seleccionadas[2]
+        }
+    else:
+        return {
+            "nivel": "Fuera de rango",
+            "MEDIDAS": generar,
+            "MEDIDA_1": "",
+            "MEDIDA_2": "",
+            "MEDIDA_3": ""
+        }
+
+
+def generarWord(plantilla_doc, carpeta_informes, reemplazos):
     """
     Crea un documento de Word a partir de una plantilla, reemplazando cada marcador 
     (clave) del diccionario `reemplazos` por su valor correspondiente.
@@ -324,13 +373,10 @@ def main():
     respuestas_agrupadas['Satisfaccion_General'] = respuestas_agrupadas['Satisfaccion_Intrinseca'] + respuestas_agrupadas['Satisfaccion_Extrinseca']
 
     calculos = calcularValores(respuestas_agrupadas)
+    conteo_respuestas = obtenerRespuestas(respuestas, 1, 8)
+    medidas = escogerMedidas(calculos['MEDIA_GENERAL'])
 
-    conteo_respuestas = obtenerRespuestas(respuestas, mapa_respuestas)
-
-    resultados = informacion | calculos | conteo_respuestas
-
-    # Cargar el documento Word plantilla
-    plantilla_doc = "plantilla_informe_satisfaccion_laboral.docx"  # TODO Cambiar nombre de la plantilla
+    resultados = informacion | calculos | conteo_respuestas | medidas
 
     plantilla_doc = os.path.join(carpeta_plantillas, "plantilla_informe_satisfaccion_laboral.docx")  # TODO Cambiar nombre de la plantilla
 

@@ -19,18 +19,18 @@ if not exist "%CONDA_PATH%\Scripts\conda.exe" (
     goto end
 )
 
-echo Se ha detectado que Anaconda correctamente instalado en: %CONDA_PATH%\Scripts\conda.exe
+echo.
+echo Anaconda detectado correctamente en: %CONDA_PATH%\Scripts\conda.exe
 
 REM 4) ACTIVAR BASE E INICIALIZAR CONDA
 call "%CONDA_PATH%\Scripts\activate.bat" base
-call conda init >nul 2>nul
 
 REM 5) COMPROBAR SI EXISTE EL ENTORNO sat-laboral
 echo.
-conda env list | findstr /C:"%ENV_NAME%" >nul
+call conda env list | findstr /C:"%ENV_NAME%" >nul
 if %errorlevel% equ 0 (
     echo El entorno "%ENV_NAME%" ya existe. Se procede a actualizarlo...
-    conda env update -y --name "%ENV_NAME%" --file "%ENV_FILE%" --prune
+    call conda env update --name "%ENV_NAME%" --file "%ENV_FILE%" --prune
     if %errorlevel% neq 0 (
         echo.
         echo [ERROR] Hubo un problema al actualizar el entorno "%ENV_NAME%".
@@ -40,7 +40,7 @@ if %errorlevel% equ 0 (
     echo Entorno "%ENV_NAME%" actualizado correctamente.
 ) else (
     echo El entorno "%ENV_NAME%" no existe. Se procedera a crearlo...
-    conda env create -f "%ENV_FILE%"
+    call conda env create -y -f "%ENV_FILE%"
     if %errorlevel% neq 0 (
         echo.
         echo [ERROR] Hubo un problema al crear el entorno "%ENV_NAME%".
@@ -49,6 +49,7 @@ if %errorlevel% equ 0 (
     echo.
     echo Entorno "%ENV_NAME%" creado correctamente.
 )
+
 
 REM 6) ACTIVAR EL ENTORNO sat-laboral
 call conda activate %ENV_NAME%
@@ -61,7 +62,7 @@ if %errorlevel% neq 0 (
 REM 7) COMPROBAR QUE Generar_informe.py EXISTA
 if not exist "%SCRIPT_FILE%" (
     echo.
-    echo [ERROR] No se encontró el archivo Generar_informe.py en la ruta:
+    echo [ERROR] No se ha encontrado el archivo Generar_informe.py en la ruta:
     echo "%SCRIPT_FILE%"
     goto end
 )
@@ -77,11 +78,11 @@ if %errorlevel% neq 0 (
 )
 
 echo.
-echo El script Generar_informe.py se ejecutó correctamente.
+echo El script Generar_informe.py se ha ejecutado correctamente.
 
 :end
-REM 9) MENSAJE FINAL: NO SE CIERRA LA VENTANA TRAS PULSAR TECLA, SE QUEDA EN cmd
+REM 9) MENSAJE FINAL: NO SE CIERRA LA VENTANA TRAS PULSAR TECLA, SE QUEDA EN EL CMD
 echo.
 echo Presione cualquier tecla para salir...
 pause
-cmd /k
+exit

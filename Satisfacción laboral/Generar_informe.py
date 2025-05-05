@@ -378,7 +378,7 @@ def main():
 
     resultados = informacion | calculos | conteo_respuestas | medidas
 
-    plantilla_doc = os.path.join(carpeta_plantillas, "plantilla_informe_satisfaccion_laboral.docx")  # TODO Cambiar nombre de la plantilla
+    plantilla_doc = os.path.join(carpeta_plantillas, "plantilla_satisfaccion_laboral.docx")
 
     generarWord(plantilla_doc, carpeta_informes, resultados)
 

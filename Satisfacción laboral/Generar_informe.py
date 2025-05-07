@@ -318,9 +318,7 @@ def main():
     print("Nombre de la empresa: " + empresa)
 
     informacion = {
-        "FECHA": datetime.today().strftime('%d-%m-%Y'),
         "NOMBRE_EMPRESA": empresa,
-        "NOMBRE_EMPRESA2": empresa,
     }
 
     # Carga la información de prl desde json y lo añade al diccionario
@@ -343,6 +341,11 @@ def main():
 
     print(f"Procesando archivo: {archivo}")
     respuestas = pd.read_csv(archivo, sep=None, engine='python')
+
+    #Cálculo de la participación
+    invitados = int(input("¿A cuatnas personas se le ha enviado el cuestionario?"))
+    respondieron = len(respuestas)
+    informacion["PARTICIPACION"] = round((respondieron / invitados) * 100, 2) if invitados > 0 else 0
 
     # Obtener las preguntas directamente de las cabeceras del CSV
     preguntas = list(respuestas.columns)

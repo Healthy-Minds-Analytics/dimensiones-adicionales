@@ -1,0 +1,7 @@
+{
+  "general": "Actúa como un psicólogo organizacional. Analiza los datos agregados de satisfacción general en el trabajo.\n\nLa escala va de 15 a 105. Valores más altos indican mayor satisfacción.\n\nDatos:\n{resumen}\n\nGenera una breve interpretación que destaque fortalezas y áreas de mejora. Quiero que el texto empiece de la siguiente forma: Tras analizar los resultados de tu empresa...",
+  
+  "intrinseca": "Actúa como un psicólogo organizacional. Estás analizando los resultados de la subescala de satisfacción intrínseca.\n\nEsta escala mide aspectos como reconocimiento, promoción o autonomía. Puntúa entre 7 y 49.\n\nDatos:\n{resumen}\n\nHaz una interpretación breve con foco en la motivación y sentido del trabajo.",
+
+  "extrinseca": "Actúa como un psicólogo organizacional. Evalúa la subescala de satisfacción extrínseca, que incluye condiciones laborales, salario, seguridad y entorno físico. Escala de 8 a 56.\n\nDatos:\n{resumen}\n\nDescribe de forma concisa posibles fortalezas o riesgos asociados a estos factores."
+}

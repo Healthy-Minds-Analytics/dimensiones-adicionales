@@ -7,6 +7,10 @@ import glob
 from datetime import datetime
 import json
 import random
+from copy import deepcopy
+from docx.oxml import OxmlElement
+from docx.oxml.ns import qn
+
 
 def seleccionar_csv(ruta):
     """Busca archivos CSV en la carpeta de la ruta proporcionada.
@@ -27,8 +31,7 @@ def seleccionar_csv(ruta):
     archivo_mas_reciente = max(archivos_csv, key=os.path.getmtime)
     return archivo_mas_reciente
 
-
-def replace_bookmark_pair(doc, pair):
+def replace_bookmark_pair_vieja(doc, pair):
     """
     Reemplaza el contenido asociado a un marcador específico en un documento Word (python-docx),
     recorriendo todo su árbol XML, incluidos cuadros de texto y demás estructuras anidadas.
@@ -108,6 +111,112 @@ def replace_bookmark_pair(doc, pair):
     if not found:
         print(f"Marcador '{bookmark_name}' no encontrado")
 
+def replace_bookmark_pair(doc, pair):
+    """
+    Reemplaza el contenido asociado a un marcador específico en un documento Word (python-docx),
+    recorriendo todo su árbol XML, incluidos cuadros de texto y demás estructuras anidadas.
+
+    Parámetros
+    ----------
+    doc : docx.Document
+        Objeto Document proporcionado por la librería python-docx. Representa el documento 
+        donde se realizará la búsqueda y reemplazo.
+    pair : tuple
+        Tupla que contiene (bookmark_name, replacement).
+        
+        - bookmark_name (str): Nombre del marcador a localizar en el documento.
+        - replacement (str): Texto o valor que se asignará en sustitución del contenido 
+          hallado dentro del marcador.
+
+    Comportamiento
+    -------------
+    1. Se define una función interna `replace_in_element(element)` que:
+       - Recorre recursivamente cada uno de los subelementos del XML del documento.
+       - Si encuentra un 'bookmarkStart' cuyo atributo 'w:name' coincida con bookmark_name:
+         - Marca la variable `found` como True.
+         - Avanza sobre los elementos hermanos (next_sibling) del marcador hasta localizar un 
+           run (`<w:r>`) que contenga un elemento texto (`<w:t>`).
+         - Reemplaza el contenido de `<w:t>` con la cadena `replacement`.
+         - Luego elimina (en caso de existir) todos los elementos hermanos siguientes 
+           hasta toparse con un 'bookmarkEnd' (indica el fin del marcador).
+         - Termina el proceso tras el primer reemplazo exitoso.
+       - Continúa explorando recursivamente el resto de elementos si no se ha encontrado el marcador.
+
+    2. La función principal `replace_bookmark_pair(doc, pair)`:
+       - Toma la raíz (`doc._element`) y la recorre llamando a `replace_in_element`.
+       - Si, al finalizar el recorrido, la variable `found` sigue en False, 
+         imprime un aviso por consola indicando que el marcador no se encontró.
+
+    Notas
+    ----
+    - Este método modifica el documento en memoria: al finalizar, conviene llamar a `doc.save(...)`
+      para persistir los cambios en un archivo.
+    - La función solo realiza un reemplazo por marcador. Si un marcador aparece varias veces 
+      con el mismo nombre, solo se reemplazará la primera aparición que se halle al recorrer el XML.
+    - El proceso recursivo permite hallar el marcador aunque esté dentro de cuadros de texto, 
+      tablas u otras secciones anidadas del documento.
+
+    Ejemplo de uso
+    --------------
+    >>> from docx import Document
+    >>> doc = Document("mi_documento.docx")
+    >>> replace_bookmark_pair(doc, ("MI_MARKER", "Nuevo contenido"))
+    >>> doc.save("mi_documento_modificado.docx")
+    """
+
+    bookmark_name, replacement = pair
+    found = False
+
+    def replace_in_element(element):
+        nonlocal found
+        for child in element:
+            if child.tag.endswith('bookmarkStart') and child.get(qn('w:name')) == bookmark_name:
+                found = True
+
+                # Encuentra el <w:r> que contiene <w:t>
+                run_elem = child.getnext()
+                while run_elem is not None and not run_elem.tag.endswith('r'):
+                    run_elem = run_elem.getnext()
+                if run_elem is None:
+                    return
+
+                # Localiza la etiqueta <w:t>
+                text_elem = run_elem.find('.//{http://schemas.openxmlformats.org/wordprocessingml/2006/main}t')
+                if text_elem is None:
+                    return
+
+                # Obtiene su párrafo padre (<w:p>)
+                p_elem = run_elem.getparent()
+
+                # Divide el replacement en líneas
+                lines = str(replacement).split('\n')
+                text_elem.text = lines[0]
+
+                # Para cada línea extra, crea un párrafo nuevo después de p_elem
+                for line in lines[1:]:
+                    # clonamos el nodo <w:p> completo (incluye <w:pPr> con bullet o numeración)
+                    new_p = deepcopy(p_elem)
+                    # dentro de ese párrafo clonado, vaciamos todos los runs
+                    for r in new_p.findall('.//{http://schemas.openxmlformats.org/wordprocessingml/2006/main}r'):
+                        new_p.remove(r)
+                    # creamos un run nuevo con el texto
+                    new_r = OxmlElement('w:r')
+                    new_t = OxmlElement('w:t')
+                    new_t.text = line
+                    new_r.append(new_t)
+                    new_p.append(new_r)
+                    # insertamos este nuevo párrafo justo después del original
+                    p_elem.addnext(new_p)
+                    # avanzamos el cursor para la siguiente iteración
+                    p_elem = new_p
+
+                return
+
+            replace_in_element(child)
+
+    replace_in_element(doc._element)
+    if not found:
+        print(f"Marcador '{bookmark_name}' no encontrado")
 
 def obtenerRespuestas(dataframe, inicio, fin):
     """
@@ -185,88 +294,90 @@ def obtenerRespuestas(dataframe, inicio, fin):
     
     return conteo_respuestas
 
-def calcularValores(respuestas_dim):
+def calcularValores(respuestas_dim: pd.DataFrame) -> pd.DataFrame:
     """
-    Calcula la media y la desviación estándar para cada dimensión
-    presente en el DataFrame `respuestas_dim`.
-
-    Parámetros
-    ----------
-    respuestas_dim : pd.DataFrame
-        DataFrame con una columna por cada dimensión del cuestionario
-        (por ejemplo 'CARACTERISTICAS_TAREA', 'CANSANCIO_EMOCIONAL', ...),
-        y cada fila la puntuación total de un encuestado en esa dimensión.
-
-    Retorna
-    -------
-    dict
-        Diccionario con claves:
-        - "MEDIA_<DIMENSION>": media de esa dimensión, redondeada a 2 decimales.
-        - "STD_<DIMENSION>": desviación estándar de esa dimensión, redondeada a 2 decimales.
+    Devuelve un DataFrame con la media y la desviación estándar
+    por cada dimensión (como filas), ya redondeadas a 2 decimales.
+    
+    Índices: nombre de la dimensión.
+    Columnas: ['mean', 'std'].
     """
+    stats = respuestas_dim.agg(['mean', 'std']).T
+    return stats.round(2)
+
+def df_a_reemplazos(df_stats: pd.DataFrame) -> dict:
     reemplazos = {}
-    for dim in respuestas_dim.columns:
-        media = respuestas_dim[dim].mean()
-        std   = respuestas_dim[dim].std()
-
-        # Generación dinámica de las claves del diccionario
-        key_m = f"MEDIA_{dim}"
-        key_s = f"STD_{dim}"
-        reemplazos[key_m] = round(media, 2)
-        reemplazos[key_s] = round(std, 2)
-
+    for dim, row in df_stats.iterrows():
+        reemplazos[f"MEDIA_{dim}"] = row['mean']
+        reemplazos[f"STD_{dim}"] = row['std']
     return reemplazos
 
-def escogerMedidas(media):
-    """
-    Carga los datos de rangos y medidas desde medidas.json,
-    clasifica la media y devuelve un diccionario con 3 medidas seleccionadas
-    aleatoriamente en función del nivel obtenido.
-    """
-    # Carga de datos desde el archivo JSON
-    with open("medidas.json", "r", encoding="utf-8") as f:
-        data = json.load(f)
-    
-    #print(data)
-    # Extracción de los rangos y las medidas
-    rangos = data["rangos"]
-    medidas = data["medidas"]
+def escogerMedidas(estadisticas: pd.DataFrame, limite=10) -> dict:
+    estadisticas_corregidas = estadisticas.copy()
+    estadisticas_corregidas.loc[['FISICAS', 'SOCIALES', 'PSICOLOGICAS'], 'mean'] *= 3
 
-    # Clasificación según la media
-    if rangos["rojo"][0] <= media <= rangos["rojo"][1]:
-        nivel = "rojo"
-    elif rangos["naranja"][0] <= media <= rangos["naranja"][1]:
-        nivel = "naranja"
-    elif rangos["amarillo"][0] <= media <= rangos["amarillo"][1]:
-        nivel = "amarillo"
-    elif rangos["verde"][0] <= media <= rangos["verde"][1]:
-        nivel = "verde"
-    else:
-        nivel = None
-    
-    # Selección de medidas
-    generar = 3
-    if nivel:
+    # Buscar las dimensiones (filas) de estadisticas cuya media sea mayor que el límite indicado
+    alertas = estadisticas_corregidas[estadisticas_corregidas['mean'] > limite]
+
+    dims = list(alertas.index)
+
+    if len(dims) < 2:
+        dims = estadisticas_corregidas['mean'].nlargest(2).index.tolist()
+
+
+    ficheros = {
+        "CARACTERISTICAS_TAREA": 'caracteristicas_tarea',
+        "ORGANIZACION":'organizacion',
+        "TEDIO": 'tedio',
+        "CANSANCIO_EMOCIONAL": 'cansancio_emocional',
+        "DESPERSONALIZACION": 'despersonalizacion',
+        "REALIZACION_PERSONAL": 'realizacion_personal',
+        'FISICAS': 'consecuencias_fisicas',
+        'SOCIALES': 'consecuencias_sociales',
+        'PSICOLOGICAS': 'consecuencias_psicologicas'
         
-        medidas_seleccionadas = random.sample(medidas[nivel], generar)
-        return {
-            "Prueba": nivel,
-            "MEDIDAS": generar,
-            "MEDIDA_1": medidas_seleccionadas[0],
-            "MEDIDA_2": medidas_seleccionadas[1],
-            "MEDIDA_3": medidas_seleccionadas[2]
-        }
-    else:
-        return {
-            "nivel": "Fuera de rango",
-            "MEDIDAS": generar,
-            "MEDIDA_1": "",
-            "MEDIDA_2": "",
-            "MEDIDA_3": ""
-        }
+    }
+
+    parrafos = []
+    for dim in dims:
+        base = ficheros.get(dim, '')
+        if not base:
+            # no hay JSON asociado: lo ignoramos
+            print(f"No hay fichero asociado para la dimensión {dim!r}, por lo que no se proponen medidas para dicha dimensión.")
+            continue
+
+        fichero = os.path.join('Medidas', f'{base}.json')
+        if not os.path.exists(fichero):
+            print(f"El fichero {fichero} no existe")
+            continue
+        
+        # Abrir archivo JSON
+        with open(fichero, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        if not data:
+            print(f"El fichero {fichero} de la dimensión {dim!r} está vacío")
+            continue
+        
+        try:
+            lista_medidas = next(iter(data.values()))
+        except StopIteration:
+            continue
+
+        if not lista_medidas:
+            continue
+
+        #print(lista_medidas)
+        # Escoge una medida al azar
+        medida = random.choice(lista_medidas)
+
+        parrafos.append(f"{medida}")
+
+    texto_final = "\n".join(parrafos)
+
+    return {'MEDIDAS': texto_final}
 
 
-def generarWord(plantilla_doc, carpeta_informes, reemplazos):
+def generarWord(plantilla_doc, informe, carpeta_informes, reemplazos):
     """
     Crea un documento de Word a partir de una plantilla, reemplazando cada marcador 
     (clave) del diccionario `reemplazos` por su valor correspondiente.
@@ -275,6 +386,10 @@ def generarWord(plantilla_doc, carpeta_informes, reemplazos):
     ----------
     plantilla_doc : str
         Ruta al archivo .docx que sirve de plantilla.
+    informe : dict
+        Nombre del informe a generar.
+    carpeta_informes : str
+        Ruta a la carpeta donde se guardará el informe.
     reemplazos : dict
         Diccionario cuyas claves son nombres de marcador y cuyos valores son 
         los textos que se insertarán en dichos marcadores.
@@ -293,7 +408,7 @@ def generarWord(plantilla_doc, carpeta_informes, reemplazos):
     # Aplicar reemplazos usando map
     list(map(lambda pair: replace_bookmark_pair(doc, pair), reemplazos.items()))
 
-    output_doc = os.path.join(carpeta_informes, f"Informe_Burnout_{reemplazos['NOMBRE_EMPRESA']}.docx")
+    output_doc = os.path.join(carpeta_informes, f"Informe_{informe}_{reemplazos['NOMBRE_EMPRESA']}.docx")
     doc.save(output_doc)
     
     print(f"Informe generdo correctamente. Cierre esta ventana y vaya a {output_doc}")
@@ -335,9 +450,6 @@ def calcular_metricas_estadisticas(respuestas_agrupadas: pd.DataFrame) -> dict:
 
     return metricas
 
-
-# %%
-
 if '__file__' in globals():
     # Estamos en un script .py real
     ruta_script = os.path.dirname(os.path.abspath(__file__))
@@ -345,7 +457,6 @@ else:
     # Estamos en Jupyter o un entorno sin __file__
     ruta_script = os.getcwd()
 
-os.chdir(ruta_script)
 carpeta_respuestas = os.path.join(ruta_script, 'Respuestas')
 carpeta_informes = os.path.join(ruta_script, "Informes generados")
 carpeta_plantillas = os.path.join(ruta_script, "Plantillas")
@@ -353,9 +464,10 @@ carpeta_plantillas = os.path.join(ruta_script, "Plantillas")
 # Carga de la configuración de dimensiones del CBB
 ruta_config = os.path.join(ruta_script, 'Dimensiones_CBB.json')
 with open(ruta_config, 'r', encoding='utf-8') as f:
-    cfg = json.load(f) #TODO Cambiar cfg a dimensiones
+    config = json.load(f) #TODO Cambiar cfg a dimensiones
 
 archivo = seleccionar_csv(carpeta_respuestas)
+informe = "Burnout"
 
 if archivo is None:
     print("No se ha encontrado ningún archivo csv")
@@ -371,7 +483,7 @@ print(f"Procesando archivo: {archivo}")
 respuestas = pd.read_csv(archivo, sep=None, engine='python')
 preguntas = list(respuestas.columns)
 
-# —————— Mapa de respuestas CBB ——————
+# Mapa de respuestas CBB
 # Se normaliza todo a minúsculas y sin espacios sobrantes
 mapa_respuestas = {
     # Escala “nada” → “mucho” (ítems 13,15,16,17,19)
@@ -397,8 +509,7 @@ mapa_respuestas = {
     "siempre": 5
 }
 
-# —————— Conversión de texto a números ——————
-# Para cada celda: si es string, strip()/lower() y buscamos en el mapa; si no, lo dejamos igual
+# Conversión de texto a números
 '''respuestas_convertidas = respuestas.applymap(lambda x: mapa_respuestas.get(x.strip().lower(), x) if isinstance(x, str) else x)
 
 respuestas_convertidas = respuestas.applymap(lambda x: mapa_respuestas.get(x, x))'''
@@ -408,12 +519,11 @@ respuestas_convertidas = respuestas.map(lambda x: mapa_respuestas.get(x.strip().
 # Agrupamiento por dimensión
 respuestas_agrupadas = pd.DataFrame(index=respuestas.index)
 
-for bloque_nombre, bloque in cfg.items():
+for bloque_nombre, bloque in config.items():
     for dim_nombre, info in bloque.items():
         items = info['items']
         # Convertimos la lista de índices 1-based en nombres de columna
         cols = [preguntas[i-1] for i in items]
-        # Para cada encuestado sumamos los valores de esas columnas
         respuestas_agrupadas[dim_nombre] = respuestas_convertidas[cols].sum(axis=1)
 
 
@@ -422,14 +532,12 @@ invitados = int(input("Por favor, indica el número de personas a las que se env
 respondieron = len(respuestas)
 informacion["PARTICIPACION"] = round((respondieron / invitados) * 100, 2) if invitados > 0 else 0
 
-calculos = calcularValores(respuestas_agrupadas)
-calculos = calcularValores(respuestas_agrupadas)
+estadisticas = calcularValores(respuestas_agrupadas)
+calculos = df_a_reemplazos(estadisticas)
 conteo_respuestas = obtenerRespuestas(respuestas, 1, 6)
-#medidas = escogerMedidas(calculos['MEDIA_GENERAL'])
+medidas = escogerMedidas(estadisticas, 9)
 
-resultados = informacion | calculos | conteo_respuestas# | medidas
+resultados = informacion | calculos | conteo_respuestas | medidas
 plantilla_doc = os.path.join(carpeta_plantillas, "plantilla_burnout.docx")
 
-generarWord(plantilla_doc, carpeta_informes, resultados)
-
-
+generarWord(plantilla_doc, informe, carpeta_informes, resultados)

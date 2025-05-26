@@ -1,0 +1,3 @@
+SERVICIO_PRL=Servicio de Prevención Ajeno
+RESPONSABLE=Juan Pérez
+CARGO=Director de Seguridad y Salud

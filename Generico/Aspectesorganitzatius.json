@@ -1,0 +1,972 @@
+{
+    "id": 15,
+    "titles": {
+        "ca": "Aspectes organitzatius"
+    },
+    "descriptions": {
+        "ca": "Aspectes organitzatius"
+    },
+    "availableLocales": [
+        "ca"
+    ],
+    "questions": [
+        {
+            "id": 211,
+            "questionTexts": {
+                "ca": "1. Respecte la seguretat al teu lloc de treball, quina és la teva percepció de seguretat? Valora de l' 1 al 10 (a on: 1 molt poca i 10 total seguretat)."
+            },
+            "options": [
+                {
+                    "id": 973,
+                    "value": "1",
+                    "optionTexts": {
+                        "ca": "1"
+                    }
+                },
+                {
+                    "id": 974,
+                    "value": "2",
+                    "optionTexts": {
+                        "ca": "2"
+                    }
+                },
+                {
+                    "id": 975,
+                    "value": "3",
+                    "optionTexts": {
+                        "ca": "3"
+                    }
+                },
+                {
+                    "id": 976,
+                    "value": "4",
+                    "optionTexts": {
+                        "ca": "4"
+                    }
+                },
+                {
+                    "id": 977,
+                    "value": "5",
+                    "optionTexts": {
+                        "ca": "5"
+                    }
+                },
+                {
+                    "id": 979,
+                    "value": "6",
+                    "optionTexts": {
+                        "ca": "6"
+                    }
+                },
+                {
+                    "id": 980,
+                    "value": "7",
+                    "optionTexts": {
+                        "ca": "7"
+                    }
+                },
+                {
+                    "id": 982,
+                    "value": "8",
+                    "optionTexts": {
+                        "ca": "8"
+                    }
+                },
+                {
+                    "id": 984,
+                    "value": "9",
+                    "optionTexts": {
+                        "ca": "9"
+                    }
+                },
+                {
+                    "id": 986,
+                    "value": "10",
+                    "optionTexts": {
+                        "ca": "10"
+                    }
+                }
+            ]
+        },
+        {
+            "id": 212,
+            "questionTexts": {
+                "ca": "2. En l'àmbit de l'assetjament laboral, estàs adequadament informat/da dels protocols i les actuacions que cal fer en cas de patir assetjament o violència sexual, per raó de sexe, d'orientació sexual, d'identitat de gènere o expressió de gènere?.  Valora de l' 1 al 10 (a on: 1 molt poca informació i 10 total informació)."
+            },
+            "options": [
+                {
+                    "id": 988,
+                    "value": "1",
+                    "optionTexts": {
+                        "ca": "1"
+                    }
+                },
+                {
+                    "id": 990,
+                    "value": "2",
+                    "optionTexts": {
+                        "ca": "2"
+                    }
+                },
+                {
+                    "id": 992,
+                    "value": "3",
+                    "optionTexts": {
+                        "ca": "3"
+                    }
+                },
+                {
+                    "id": 994,
+                    "value": "4",
+                    "optionTexts": {
+                        "ca": "4"
+                    }
+                },
+                {
+                    "id": 996,
+                    "value": "5",
+                    "optionTexts": {
+                        "ca": "5"
+                    }
+                },
+                {
+                    "id": 998,
+                    "value": "6",
+                    "optionTexts": {
+                        "ca": "6"
+                    }
+                },
+                {
+                    "id": 1000,
+                    "value": "7",
+                    "optionTexts": {
+                        "ca": "7"
+                    }
+                },
+                {
+                    "id": 1002,
+                    "value": "8",
+                    "optionTexts": {
+                        "ca": "8"
+                    }
+                },
+                {
+                    "id": 1004,
+                    "value": "9",
+                    "optionTexts": {
+                        "ca": "9"
+                    }
+                },
+                {
+                    "id": 1006,
+                    "value": "10",
+                    "optionTexts": {
+                        "ca": "10"
+                    }
+                }
+            ]
+        },
+        {
+            "id": 213,
+            "questionTexts": {
+                "ca": "3. Què coneixes l’ HRS4R i el seu impacte a l'institut?  Valora de l' 1 al 10 (a on: 1 molt poca informació i 10 total informació)."
+            },
+            "options": [
+                {
+                    "id": 1008,
+                    "value": "1",
+                    "optionTexts": {
+                        "ca": "1"
+                    }
+                },
+                {
+                    "id": 1010,
+                    "value": "2",
+                    "optionTexts": {
+                        "ca": "2"
+                    }
+                },
+                {
+                    "id": 1012,
+                    "value": "3",
+                    "optionTexts": {
+                        "ca": "3"
+                    }
+                },
+                {
+                    "id": 1014,
+                    "value": "4",
+                    "optionTexts": {
+                        "ca": "4"
+                    }
+                },
+                {
+                    "id": 1016,
+                    "value": "5",
+                    "optionTexts": {
+                        "ca": "5"
+                    }
+                },
+                {
+                    "id": 1018,
+                    "value": "6",
+                    "optionTexts": {
+                        "ca": "6"
+                    }
+                },
+                {
+                    "id": 1020,
+                    "value": "7",
+                    "optionTexts": {
+                        "ca": "7"
+                    }
+                },
+                {
+                    "id": 1022,
+                    "value": "8",
+                    "optionTexts": {
+                        "ca": "8"
+                    }
+                },
+                {
+                    "id": 1024,
+                    "value": "9",
+                    "optionTexts": {
+                        "ca": "9"
+                    }
+                },
+                {
+                    "id": 1073,
+                    "value": "10",
+                    "optionTexts": {
+                        "ca": "10"
+                    }
+                }
+            ]
+        },
+        {
+            "id": 214,
+            "questionTexts": {
+                "ca": "4. Consideres que el pla HRS4R s'ha comunicat de manera clara?  Valora de l' 1 al 10 (a on: 1 molt poca comunicació i 10 total comunicació)."
+            },
+            "options": [
+                {
+                    "id": 1074,
+                    "value": "1",
+                    "optionTexts": {
+                        "ca": "1"
+                    }
+                },
+                {
+                    "id": 1075,
+                    "value": "2",
+                    "optionTexts": {
+                        "ca": "2"
+                    }
+                },
+                {
+                    "id": 1076,
+                    "value": "3",
+                    "optionTexts": {
+                        "ca": "3"
+                    }
+                },
+                {
+                    "id": 1077,
+                    "value": "4",
+                    "optionTexts": {
+                        "ca": "4"
+                    }
+                },
+                {
+                    "id": 1078,
+                    "value": "5",
+                    "optionTexts": {
+                        "ca": "5"
+                    }
+                },
+                {
+                    "id": 1079,
+                    "value": "6",
+                    "optionTexts": {
+                        "ca": "6"
+                    }
+                },
+                {
+                    "id": 1080,
+                    "value": "7",
+                    "optionTexts": {
+                        "ca": "7"
+                    }
+                },
+                {
+                    "id": 1081,
+                    "value": "8",
+                    "optionTexts": {
+                        "ca": "8"
+                    }
+                },
+                {
+                    "id": 1082,
+                    "value": "9",
+                    "optionTexts": {
+                        "ca": "9"
+                    }
+                },
+                {
+                    "id": 1083,
+                    "value": "10",
+                    "optionTexts": {
+                        "ca": "10"
+                    }
+                }
+            ]
+        },
+        {
+            "id": 215,
+            "questionTexts": {
+                "ca": "5. Saps on es pot consultar la informació sobre l'HRS4R?"
+            },
+            "options": [
+                {
+                    "id": 1084,
+                    "value": "Si",
+                    "optionTexts": {
+                        "ca": "Si"
+                    }
+                },
+                {
+                    "id": 1085,
+                    "value": "No",
+                    "optionTexts": {
+                        "ca": "No"
+                    }
+                }
+            ]
+        },
+        {
+            "id": 216,
+            "questionTexts": {
+                "ca": "6. Creus que el pla HRS4R cobreix les necessitats del personal investigador i de suport? Valora de l' 1 al 10 (a on: 1 molt poca cobertura i 10 total cobertura de necessitats)."
+            },
+            "options": [
+                {
+                    "id": 1086,
+                    "value": "1",
+                    "optionTexts": {
+                        "ca": "1"
+                    }
+                },
+                {
+                    "id": 1087,
+                    "value": "2",
+                    "optionTexts": {
+                        "ca": "2"
+                    }
+                },
+                {
+                    "id": 1088,
+                    "value": "3",
+                    "optionTexts": {
+                        "ca": "3"
+                    }
+                },
+                {
+                    "id": 1089,
+                    "value": "4",
+                    "optionTexts": {
+                        "ca": "4"
+                    }
+                },
+                {
+                    "id": 1090,
+                    "value": "5",
+                    "optionTexts": {
+                        "ca": "5"
+                    }
+                },
+                {
+                    "id": 1091,
+                    "value": "6",
+                    "optionTexts": {
+                        "ca": "6"
+                    }
+                },
+                {
+                    "id": 1092,
+                    "value": "7",
+                    "optionTexts": {
+                        "ca": "7"
+                    }
+                },
+                {
+                    "id": 1093,
+                    "value": "8",
+                    "optionTexts": {
+                        "ca": "8"
+                    }
+                },
+                {
+                    "id": 1094,
+                    "value": "9",
+                    "optionTexts": {
+                        "ca": "9"
+                    }
+                },
+                {
+                    "id": 1095,
+                    "value": "10",
+                    "optionTexts": {
+                        "ca": "10"
+                    }
+                }
+            ]
+        },
+        {
+            "id": 217,
+            "questionTexts": {
+                "ca": "7. Estic adequadament informat/da dels protocols i les actuacions que cal fer en cas de patir assetjament o violència: sexual o per raó de sexe, d’orientació sexual, identitat de gènere, expressió de gènere, característiques sexuals i diversitat familiar? (Valora del 1-10)"
+            },
+            "options": [
+                {
+                    "id": 1096,
+                    "value": "1",
+                    "optionTexts": {
+                        "ca": "1"
+                    }
+                },
+                {
+                    "id": 1097,
+                    "value": "2",
+                    "optionTexts": {
+                        "ca": "2"
+                    }
+                },
+                {
+                    "id": 1098,
+                    "value": "3",
+                    "optionTexts": {
+                        "ca": "3"
+                    }
+                },
+                {
+                    "id": 1099,
+                    "value": "4",
+                    "optionTexts": {
+                        "ca": "4"
+                    }
+                },
+                {
+                    "id": 1100,
+                    "value": "5",
+                    "optionTexts": {
+                        "ca": "5"
+                    }
+                },
+                {
+                    "id": 1101,
+                    "value": "6",
+                    "optionTexts": {
+                        "ca": "6"
+                    }
+                },
+                {
+                    "id": 1102,
+                    "value": "7",
+                    "optionTexts": {
+                        "ca": "7"
+                    }
+                },
+                {
+                    "id": 1103,
+                    "value": "8",
+                    "optionTexts": {
+                        "ca": "8"
+                    }
+                },
+                {
+                    "id": 1104,
+                    "value": "9",
+                    "optionTexts": {
+                        "ca": "9"
+                    }
+                },
+                {
+                    "id": 1105,
+                    "value": "10",
+                    "optionTexts": {
+                        "ca": "10"
+                    }
+                }
+            ]
+        },
+        {
+            "id": 218,
+            "questionTexts": {
+                "ca": "8. El personal, la direcció i els càrrecs de comandament del I3PT adopten una actitud activa en contra de la discriminació cap a persones LGBTIQ+ i no toleren comentaris LGBTI-fòbics? (Valora del 1-10)"
+            },
+            "options": [
+                {
+                    "id": 1106,
+                    "value": "1",
+                    "optionTexts": {
+                        "ca": "1"
+                    }
+                },
+                {
+                    "id": 1107,
+                    "value": "2",
+                    "optionTexts": {
+                        "ca": "2"
+                    }
+                },
+                {
+                    "id": 1108,
+                    "value": "3",
+                    "optionTexts": {
+                        "ca": "3"
+                    }
+                },
+                {
+                    "id": 1109,
+                    "value": "4",
+                    "optionTexts": {
+                        "ca": "4"
+                    }
+                },
+                {
+                    "id": 1110,
+                    "value": "5",
+                    "optionTexts": {
+                        "ca": "5"
+                    }
+                },
+                {
+                    "id": 1111,
+                    "value": "6",
+                    "optionTexts": {
+                        "ca": "6"
+                    }
+                },
+                {
+                    "id": 1112,
+                    "value": "7",
+                    "optionTexts": {
+                        "ca": "7"
+                    }
+                },
+                {
+                    "id": 1113,
+                    "value": "8",
+                    "optionTexts": {
+                        "ca": "8"
+                    }
+                },
+                {
+                    "id": 1114,
+                    "value": "9",
+                    "optionTexts": {
+                        "ca": "9"
+                    }
+                },
+                {
+                    "id": 1157,
+                    "value": "10",
+                    "optionTexts": {
+                        "ca": "10"
+                    }
+                }
+            ]
+        },
+        {
+            "id": 219,
+            "questionTexts": {
+                "ca": "9. Hi ha una igualtat d’oportunitats entre dones i homes quant a la formació, selecció i desenvolupament professional? (Valora del 1-10)"
+            },
+            "options": [
+                {
+                    "id": 1158,
+                    "value": "1",
+                    "optionTexts": {
+                        "ca": "1"
+                    }
+                },
+                {
+                    "id": 1159,
+                    "value": "2",
+                    "optionTexts": {
+                        "ca": "2"
+                    }
+                },
+                {
+                    "id": 1160,
+                    "value": "3",
+                    "optionTexts": {
+                        "ca": "3"
+                    }
+                },
+                {
+                    "id": 1161,
+                    "value": "4",
+                    "optionTexts": {
+                        "ca": "4"
+                    }
+                },
+                {
+                    "id": 1162,
+                    "value": "5",
+                    "optionTexts": {
+                        "ca": "5"
+                    }
+                },
+                {
+                    "id": 1163,
+                    "value": "6",
+                    "optionTexts": {
+                        "ca": "6"
+                    }
+                },
+                {
+                    "id": 1164,
+                    "value": "7",
+                    "optionTexts": {
+                        "ca": "7"
+                    }
+                },
+                {
+                    "id": 1165,
+                    "value": "8",
+                    "optionTexts": {
+                        "ca": "8"
+                    }
+                },
+                {
+                    "id": 1166,
+                    "value": "9",
+                    "optionTexts": {
+                        "ca": "9"
+                    }
+                },
+                {
+                    "id": 1167,
+                    "value": "10",
+                    "optionTexts": {
+                        "ca": "10"
+                    }
+                }
+            ]
+        },
+        {
+            "id": 220,
+            "questionTexts": {
+                "ca": "10. Hi ha un adequat equilibri de gènere en els equips directius i en l’àmbit de comandaments? (Valora del 1-10)"
+            },
+            "options": [
+                {
+                    "id": 1168,
+                    "value": "1",
+                    "optionTexts": {
+                        "ca": "1"
+                    }
+                },
+                {
+                    "id": 1169,
+                    "value": "2",
+                    "optionTexts": {
+                        "ca": "2"
+                    }
+                },
+                {
+                    "id": 1170,
+                    "value": "3",
+                    "optionTexts": {
+                        "ca": "3"
+                    }
+                },
+                {
+                    "id": 1171,
+                    "value": "4",
+                    "optionTexts": {
+                        "ca": "4"
+                    }
+                },
+                {
+                    "id": 1172,
+                    "value": "56",
+                    "optionTexts": {
+                        "ca": "5"
+                    }
+                },
+                {
+                    "id": 1173,
+                    "value": "6",
+                    "optionTexts": {
+                        "ca": "6"
+                    }
+                },
+                {
+                    "id": 1174,
+                    "value": "78",
+                    "optionTexts": {
+                        "ca": "7"
+                    }
+                },
+                {
+                    "id": 1175,
+                    "value": "8",
+                    "optionTexts": {
+                        "ca": "8"
+                    }
+                },
+                {
+                    "id": 1176,
+                    "value": "9",
+                    "optionTexts": {
+                        "ca": "9"
+                    }
+                },
+                {
+                    "id": 1177,
+                    "value": "10",
+                    "optionTexts": {
+                        "ca": "10"
+                    }
+                }
+            ]
+        },
+        {
+            "id": 221,
+            "questionTexts": {
+                "ca": "11. Al I3PT, l’home i la dona cobren el mateix salari per fer la mateixa feina?  (Valora del 1-10)"
+            },
+            "options": [
+                {
+                    "id": 1178,
+                    "value": "1",
+                    "optionTexts": {
+                        "ca": "1"
+                    }
+                },
+                {
+                    "id": 1179,
+                    "value": "2",
+                    "optionTexts": {
+                        "ca": "2"
+                    }
+                },
+                {
+                    "id": 1180,
+                    "value": "3",
+                    "optionTexts": {
+                        "ca": "3"
+                    }
+                },
+                {
+                    "id": 1181,
+                    "value": "4",
+                    "optionTexts": {
+                        "ca": "4"
+                    }
+                },
+                {
+                    "id": 1182,
+                    "value": "5",
+                    "optionTexts": {
+                        "ca": "5"
+                    }
+                },
+                {
+                    "id": 1183,
+                    "value": "6",
+                    "optionTexts": {
+                        "ca": "6"
+                    }
+                },
+                {
+                    "id": 1184,
+                    "value": "7",
+                    "optionTexts": {
+                        "ca": "7"
+                    }
+                },
+                {
+                    "id": 1185,
+                    "value": "8",
+                    "optionTexts": {
+                        "ca": "8"
+                    }
+                },
+                {
+                    "id": 1186,
+                    "value": "9",
+                    "optionTexts": {
+                        "ca": "9"
+                    }
+                },
+                {
+                    "id": 1187,
+                    "value": "10",
+                    "optionTexts": {
+                        "ca": "10"
+                    }
+                }
+            ]
+        },
+        {
+            "id": 222,
+            "questionTexts": {
+                "ca": "12. El fet d’acollir-me a mesures de conciliació (excedències, reduccions de jornada, permís per naixement,...) no té efectes negatius en la meva carrera professional? (Valora del 1-10)"
+            },
+            "options": [
+                {
+                    "id": 1188,
+                    "value": "1",
+                    "optionTexts": {
+                        "ca": "1"
+                    }
+                },
+                {
+                    "id": 1189,
+                    "value": "2",
+                    "optionTexts": {
+                        "ca": "2"
+                    }
+                },
+                {
+                    "id": 1190,
+                    "value": "3",
+                    "optionTexts": {
+                        "ca": "3"
+                    }
+                },
+                {
+                    "id": 1191,
+                    "value": "4",
+                    "optionTexts": {
+                        "ca": "4"
+                    }
+                },
+                {
+                    "id": 1192,
+                    "value": "5",
+                    "optionTexts": {
+                        "ca": "5"
+                    }
+                },
+                {
+                    "id": 1193,
+                    "value": "6",
+                    "optionTexts": {
+                        "ca": "6"
+                    }
+                },
+                {
+                    "id": 1194,
+                    "value": "7",
+                    "optionTexts": {
+                        "ca": "7"
+                    }
+                },
+                {
+                    "id": 1195,
+                    "value": "8",
+                    "optionTexts": {
+                        "ca": "8"
+                    }
+                },
+                {
+                    "id": 1196,
+                    "value": "9",
+                    "optionTexts": {
+                        "ca": "9"
+                    }
+                },
+                {
+                    "id": 1197,
+                    "value": "10",
+                    "optionTexts": {
+                        "ca": "10"
+                    }
+                }
+            ]
+        },
+        {
+            "id": 223,
+            "questionTexts": {
+                "ca": "13. Les mesures de gestió del temps (canvis de torn i adequacions d’horari per necessitat de conciliació, flexibilitat horària...) són adequades a les necessitats de la plantilla? (Valora del 1-10)"
+            },
+            "options": [
+                {
+                    "id": 1198,
+                    "value": "1",
+                    "optionTexts": {
+                        "ca": "1"
+                    }
+                },
+                {
+                    "id": 1199,
+                    "value": "2",
+                    "optionTexts": {
+                        "ca": "2"
+                    }
+                },
+                {
+                    "id": 1200,
+                    "value": "3",
+                    "optionTexts": {
+                        "ca": "3"
+                    }
+                },
+                {
+                    "id": 1201,
+                    "value": "4",
+                    "optionTexts": {
+                        "ca": "4"
+                    }
+                },
+                {
+                    "id": 1202,
+                    "value": "5",
+                    "optionTexts": {
+                        "ca": "5"
+                    }
+                },
+                {
+                    "id": 1203,
+                    "value": "6",
+                    "optionTexts": {
+                        "ca": "6"
+                    }
+                },
+                {
+                    "id": 1205,
+                    "value": "7",
+                    "optionTexts": {
+                        "ca": "7"
+                    }
+                },
+                {
+                    "id": 1206,
+                    "value": "8",
+                    "optionTexts": {
+                        "ca": "8"
+                    }
+                },
+                {
+                    "id": 1208,
+                    "value": "9",
+                    "optionTexts": {
+                        "ca": "9"
+                    }
+                },
+                {
+                    "id": 1210,
+                    "value": "10",
+                    "optionTexts": {
+                        "ca": "10"
+                    }
+                }
+            ]
+        }
+    ]
+}

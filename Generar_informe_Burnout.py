@@ -32,187 +32,83 @@ def seleccionar_csv(ruta):
     archivo_mas_reciente = max(archivos_csv, key=os.path.getmtime)
     return archivo_mas_reciente
 
-def replace_bookmark_pair_vieja(doc, pair):
-    """
-    Reemplaza el contenido asociado a un marcador específico en un documento Word (python-docx),
-    recorriendo todo su árbol XML, incluidos cuadros de texto y demás estructuras anidadas.
-
-    Parámetros
-    ----------
-    doc : docx.Document
-        Objeto Document proporcionado por la librería python-docx. Representa el documento 
-        donde se realizará la búsqueda y reemplazo.
-    pair : tuple
-        Tupla que contiene (bookmark_name, replacement).
-        
-        - bookmark_name (str): Nombre del marcador a localizar en el documento.
-        - replacement (str): Texto o valor que se asignará en sustitución del contenido 
-          hallado dentro del marcador.
-
-    Comportamiento
-    -------------
-    1. Se define una función interna `replace_in_element(element)` que:
-       - Recorre recursivamente cada uno de los subelementos del XML del documento.
-       - Si encuentra un 'bookmarkStart' cuyo atributo 'w:name' coincida con bookmark_name:
-         - Marca la variable `found` como True.
-         - Avanza sobre los elementos hermanos (next_sibling) del marcador hasta localizar un 
-           run (`<w:r>`) que contenga un elemento texto (`<w:t>`).
-         - Reemplaza el contenido de `<w:t>` con la cadena `replacement`.
-         - Luego elimina (en caso de existir) todos los elementos hermanos siguientes 
-           hasta toparse con un 'bookmarkEnd' (indica el fin del marcador).
-         - Termina el proceso tras el primer reemplazo exitoso.
-       - Continúa explorando recursivamente el resto de elementos si no se ha encontrado el marcador.
-
-    2. La función principal `replace_bookmark_pair(doc, pair)`:
-       - Toma la raíz (`doc._element`) y la recorre llamando a `replace_in_element`.
-       - Si, al finalizar el recorrido, la variable `found` sigue en False, 
-         imprime un aviso por consola indicando que el marcador no se encontró.
-
-    Notas
-    ----
-    - Este método modifica el documento en memoria: al finalizar, conviene llamar a `doc.save(...)`
-      para persistir los cambios en un archivo.
-    - La función solo realiza un reemplazo por marcador. Si un marcador aparece varias veces 
-      con el mismo nombre, solo se reemplazará la primera aparición que se halle al recorrer el XML.
-    - El proceso recursivo permite hallar el marcador aunque esté dentro de cuadros de texto, 
-      tablas u otras secciones anidadas del documento.
-
-    Ejemplo de uso
-    --------------
-    >>> from docx import Document
-    >>> doc = Document("mi_documento.docx")
-    >>> replace_bookmark_pair(doc, ("MI_MARKER", "Nuevo contenido"))
-    >>> doc.save("mi_documento_modificado.docx")
-    """
-    bookmark_name, replacement = pair
-    found = False
-
-    def replace_in_element(element):
-        nonlocal found
-        for child in element:
-            if child.tag.endswith('bookmarkStart') and child.get(qn('w:name')) == bookmark_name:
-                found = True
-                next_sibling = child.getnext()
-                while next_sibling is not None:
-                    if next_sibling.tag.endswith('r'):
-                        text_element = next_sibling.find('.//{http://schemas.openxmlformats.org/wordprocessingml/2006/main}t')
-                        if text_element is not None:
-                            text_element.text = str(replacement)
-                            following_sibling = next_sibling.getnext()
-                            while following_sibling is not None and not following_sibling.tag.endswith('bookmarkEnd'):
-                                parent = following_sibling.getparent()
-                                parent.remove(following_sibling)
-                                following_sibling = next_sibling.getnext()
-                            return
-                    next_sibling = next_sibling.getnext()
-            replace_in_element(child)  # Llamada recursiva
-
-    replace_in_element(doc._element)
-
-    if not found:
-        print(f"Marcador '{bookmark_name}' no encontrado")
-
 def replace_bookmark_pair(doc, pair):
-    """
-    Reemplaza el contenido asociado a un marcador específico en un documento Word (python-docx),
-    recorriendo todo su árbol XML, incluidos cuadros de texto y demás estructuras anidadas.
-
-    Parámetros
-    ----------
-    doc : docx.Document
-        Objeto Document proporcionado por la librería python-docx. Representa el documento 
-        donde se realizará la búsqueda y reemplazo.
-    pair : tuple
-        Tupla que contiene (bookmark_name, replacement).
-        
-        - bookmark_name (str): Nombre del marcador a localizar en el documento.
-        - replacement (str): Texto o valor que se asignará en sustitución del contenido 
-          hallado dentro del marcador.
-
-    Comportamiento
-    -------------
-    1. Se define una función interna `replace_in_element(element)` que:
-       - Recorre recursivamente cada uno de los subelementos del XML del documento.
-       - Si encuentra un 'bookmarkStart' cuyo atributo 'w:name' coincida con bookmark_name:
-         - Marca la variable `found` como True.
-         - Avanza sobre los elementos hermanos (next_sibling) del marcador hasta localizar un 
-           run (`<w:r>`) que contenga un elemento texto (`<w:t>`).
-         - Reemplaza el contenido de `<w:t>` con la cadena `replacement`.
-         - Luego elimina (en caso de existir) todos los elementos hermanos siguientes 
-           hasta toparse con un 'bookmarkEnd' (indica el fin del marcador).
-         - Termina el proceso tras el primer reemplazo exitoso.
-       - Continúa explorando recursivamente el resto de elementos si no se ha encontrado el marcador.
-
-    2. La función principal `replace_bookmark_pair(doc, pair)`:
-       - Toma la raíz (`doc._element`) y la recorre llamando a `replace_in_element`.
-       - Si, al finalizar el recorrido, la variable `found` sigue en False, 
-         imprime un aviso por consola indicando que el marcador no se encontró.
-
-    Notas
-    ----
-    - Este método modifica el documento en memoria: al finalizar, conviene llamar a `doc.save(...)`
-      para persistir los cambios en un archivo.
-    - La función solo realiza un reemplazo por marcador. Si un marcador aparece varias veces 
-      con el mismo nombre, solo se reemplazará la primera aparición que se halle al recorrer el XML.
-    - El proceso recursivo permite hallar el marcador aunque esté dentro de cuadros de texto, 
-      tablas u otras secciones anidadas del documento.
-
-    Ejemplo de uso
-    --------------
-    >>> from docx import Document
-    >>> doc = Document("mi_documento.docx")
-    >>> replace_bookmark_pair(doc, ("MI_MARKER", "Nuevo contenido"))
-    >>> doc.save("mi_documento_modificado.docx")
-    """
-
     bookmark_name, replacement = pair
+    replacement = "" if replacement is None else str(replacement)
     found = False
 
-    def replace_in_element(element):
+    def replace_in_element(el):
         nonlocal found
-        for child in element:
+        for child in el:
+            # 1) Localizamos el bookmarkStart
             if child.tag.endswith('bookmarkStart') and child.get(qn('w:name')) == bookmark_name:
                 found = True
 
-                # Encuentra el <w:r> que contiene <w:t>
+                # 2) Buscamos el run (<w:r>) inmediato que contiene el <w:t>
                 run_elem = child.getnext()
                 while run_elem is not None and not run_elem.tag.endswith('r'):
                     run_elem = run_elem.getnext()
                 if run_elem is None:
                     return
 
-                # Localiza la etiqueta <w:t>
-                text_elem = run_elem.find('.//{http://schemas.openxmlformats.org/wordprocessingml/2006/main}t')
+                text_elem = run_elem.find(
+                    './/{http://schemas.openxmlformats.org/wordprocessingml/2006/main}t'
+                )
                 if text_elem is None:
                     return
 
-                # Obtiene su párrafo padre (<w:p>)
+                # 3) Si no hay saltos de línea, uso la lógica antigua: sólo reemplazo el marcador
+                if '\n' not in replacement:
+                    # Reemplazo el contenido del <w:t>
+                    text_elem.text = str(replacement)
+                    # Elimino todos los nodos hasta encontrar el bookmarkEnd
+                    sib = run_elem.getnext()
+                    while sib is not None and not sib.tag.endswith('bookmarkEnd'):
+                        to_remove = sib
+                        sib = sib.getnext()
+                        to_remove.getparent().remove(to_remove)
+                    return
+
+                # 4) Si hay saltos de línea, uso la lógica de “múltiples párrafos”
+                #    Primero, localizo el párrafo padre para clonar estilo
                 p_elem = run_elem.getparent()
+                # Borro todos los runs viejos
+                for r in p_elem.findall(
+                    './/{http://schemas.openxmlformats.org/wordprocessingml/2006/main}r'
+                ):
+                    p_elem.remove(r)
 
-                # Divide el replacement en líneas
+                # 5) Divido el replacement en líneas y genero párrafos
                 lines = str(replacement).split('\n')
-                text_elem.text = lines[0]
 
-                # Para cada línea extra, crea un párrafo nuevo después de p_elem
+                # Primera línea en el párrafo original
+                first_r = OxmlElement('w:r')
+                first_t = OxmlElement('w:t')
+                first_t.text = lines[0]
+                first_r.append(first_t)
+                p_elem.append(first_r)
+
+                # Líneas extra → clono párrafo (preserva bullets/numPr) y añado nuevo texto
+                prev_p = p_elem
                 for line in lines[1:]:
-                    # clonamos el nodo <w:p> completo (incluye <w:pPr> con bullet o numeración)
-                    new_p = deepcopy(p_elem)
-                    # dentro de ese párrafo clonado, vaciamos todos los runs
-                    for r in new_p.findall('.//{http://schemas.openxmlformats.org/wordprocessingml/2006/main}r'):
+                    new_p = deepcopy(p_elem)  # hereda <w:pPr> (bullet o estilo)
+                    # limpio runs clonados
+                    for r in new_p.findall(
+                        './/{http://schemas.openxmlformats.org/wordprocessingml/2006/main}r'
+                    ):
                         new_p.remove(r)
-                    # creamos un run nuevo con el texto
-                    new_r = OxmlElement('w:r')
-                    new_t = OxmlElement('w:t')
-                    new_t.text = line
-                    new_r.append(new_t)
-                    new_p.append(new_r)
-                    # insertamos este nuevo párrafo justo después del original
-                    p_elem.addnext(new_p)
-                    # avanzamos el cursor para la siguiente iteración
-                    p_elem = new_p
+                    # inserto el run+t con la nueva línea
+                    nr = OxmlElement('w:r')
+                    nt = OxmlElement('w:t')
+                    nt.text = line
+                    nr.append(nt)
+                    new_p.append(nr)
+                    prev_p.addnext(new_p)
+                    prev_p = new_p
 
                 return
 
+            # 6) Si no es este marcador, sigo bajando recursivamente
             replace_in_element(child)
 
     replace_in_element(doc._element)
